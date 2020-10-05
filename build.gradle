@@ -1,0 +1,49 @@
+buildscript {
+    ext {
+        versions = [
+                okhttp3    : "4.9.0",
+                jackson    : "2.11.3"
+        ]
+    }
+    repositories {
+        mavenCentral()
+    }
+}
+
+plugins {
+    id 'java'
+    id 'application'
+}
+
+application {
+    mainClass = "eu.tuxified.cmot.Main"
+}
+group 'eu.tuxified.cmot'
+version '0.1-ALPHA'
+
+allprojects {
+    repositories {
+        maven { url 'https://jitpack.io' }
+    }
+}
+
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+
+    implementation "com.github.whyorean:playstore-api-v2:2.5"
+
+    //OkHTTP3
+	implementation "com.squareup.okio:okio:2.8.0"
+    implementation "com.squareup.okhttp3:okhttp:${versions.okhttp3}"
+    implementation "com.squareup.okhttp3:okhttp-urlconnection:${versions.okhttp3}"
+
+    // Jackson
+    implementation "com.fasterxml.jackson.core:jackson-databind:${versions.jackson}"
+    implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:${versions.jackson}"
+}
+
