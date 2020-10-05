@@ -44,10 +44,18 @@ public class Apk {
         return id;
     }
 
-    private void collectApks(File directory) {
+    private static File getApkDirectory(File artifactdir) {
+        return new File(artifactdir + File.separator + "repo");
+    }
+
+    private static File getMetadataDirectory(File artifactdir) {
+        return new File(artifactdir + File.separator + "metadata");
+    }
+
+    private void collectApks(File artifactdirectory) {
         var list = new ArrayList<StoredInstance>();
         Pattern pat = Pattern.compile("^" + Pattern.quote(this.id) + "-(\\d+)\\.apk$");
-        for(File f : Objects.requireNonNull(directory.listFiles())) {
+        for(File f : Objects.requireNonNull(getApkDirectory(artifactdirectory).listFiles())) {
             Matcher m = pat.matcher(f.getName());
             if (f.isFile() && m.find()) {
                 list.add(new StoredInstance(f.getAbsoluteFile(), Long.parseUnsignedLong(m.group(1))));
@@ -117,7 +125,7 @@ public class Apk {
             handleError(this, deliveryResponse.getStatus());
         }
         doDownload(new URL(deliveryData.getDownloadUrl()),
-                new File(dir.toPath() + File.separator + id + "-" + getRemoteVersionCode() + ".apk"));
+                new File(getApkDirectory(dir) + File.separator + id + "-" + getRemoteVersionCode() + ".apk"));
     }
 
     private void doDownload(URL url, File destination) throws IOException {
@@ -234,7 +242,7 @@ public class Apk {
                 details.getDeveloperEmail(),
                 details.getAppCategoryList()
         );
-        File metadatadir = new File(artifactdir + File.separator + "metadata");
+        File metadatadir = getMetadataDirectory(artifactdir);
         var tmpfile = File.createTempFile(id, ".tmp", metadatadir);
 
         ObjectMapper om = new ObjectMapper(new YAMLFactory());
