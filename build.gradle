@@ -10,16 +10,19 @@ buildscript {
     }
 }
 
+
 plugins {
     id 'java'
     id 'application'
+    id "com.github.johnrengelman.shadow" version "6.0.0"
 }
 
+mainClassName = "eu.tuxified.cmot.Main"
 sourceCompatibility = 1.11
 targetCompatibility = 1.11
 
 application {
-    mainClass = "eu.tuxified.cmot.Main"
+    mainClass = mainClassName
 }
 group 'eu.tuxified.cmot'
 version '0.1-ALPHA'
