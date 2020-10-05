@@ -141,7 +141,7 @@ public class Apk {
 
     public static class ApkMetadata {
         public final String[] AntiFeatures = {"Ads", "Tracking", "UpstreamNonFree", "NonFreeNet"};
-        public final String License = "Unknwon";
+        public final String License = "Unknown";
         public final String AutoUpdateMode = "None";
         public final String UpdateCheckMode = "None";
         public final String MaintainerNotes = "Automatically exported from GooglePlay... No promises!";
