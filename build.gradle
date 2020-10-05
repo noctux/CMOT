@@ -24,6 +24,14 @@ application {
 group 'eu.tuxified.cmot'
 version '0.1-ALPHA'
 
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'eu.tuxified.cmot.Main'
+        )
+    }
+}
+
 allprojects {
     repositories {
         maven { url 'https://jitpack.io' }
