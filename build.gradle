@@ -15,6 +15,9 @@ plugins {
     id 'application'
 }
 
+sourceCompatibility = 1.11
+targetCompatibility = 1.11
+
 application {
     mainClass = "eu.tuxified.cmot.Main"
 }
