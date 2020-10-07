@@ -71,14 +71,18 @@ public class Main {
         return getApi(builder, config, loginInfo);
     }
 
+    private static void cleanupCachedToken(Config config) throws IOException {
+        Path cache = config.getCacheFile().toPath();
+        Files.deleteIfExists(cache);
+    }
+
     private static GooglePlayAPI getApi(Config config) throws IOException, ApiBuilderException {
         GooglePlayAPI api;
         try {
             api = fromCachedToken(config);
         } catch (Exception e) {
             System.out.println("Using cached token failed: " + e.getMessage());
-            Path cache = config.getCacheFile().toPath();
-            Files.deleteIfExists(cache);
+            cleanupCachedToken(config);
             api = login(config);
         }
 
@@ -105,22 +109,23 @@ public class Main {
             System.exit(0);
         }
 
-        /*
-        var list = new ArrayList<String>();
-        list.add("f");
-        list.add("g");
-        var meta = new Apk.ApkMetadata(
-                "a", "b", "c", "d", "e", list
-        );
-        ObjectMapper om = new ObjectMapper(new YAMLFactory());
-        om.writeValue(new File("/tmp/foo.yml"), meta);
-        System.exit(0);
-        */
-
         Config config = Config.fromConfigFile(args[0]);
-        System.err.println(config.getApkListFile().toString());
         ApkStore store = ApkStore.fromConfig(config);
-        GooglePlayAPI api = getApi(config);
-        System.exit(store.runUpdate(api));
+        // Retry at most once
+        int tries = 1;
+        boolean retry;
+        int failedUpdates = 0;
+        do {
+             retry = false;
+            GooglePlayAPI api = getApi(config);
+            failedUpdates = store.runUpdate(api);
+
+            // if ALL packages failed, the token has probably expired
+            if (store.getPackages().size() == failedUpdates) {
+                retry = true;
+                cleanupCachedToken(config);
+            }
+        } while((tries-- > 0) && retry);
+        System.exit(failedUpdates);
     }
 }

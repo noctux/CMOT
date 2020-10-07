@@ -24,6 +24,10 @@ public class ApkStore {
         this.packages = packages;
     }
 
+    public List<Apk> getPackages() {
+        return new ArrayList<>(packages.values());
+    }
+
     // Credit goes to AuroraStore
     private void getRemoteAppList(GooglePlayAPI api) throws Exception {
         //final Map<String, Apk> packageNames = packages.stream().collect(Collectors.toMap(Apk::getId, Function.identity()));
